@@ -1,0 +1,40 @@
+name: hni_customers_app
+description: New hni_customers_app app
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0"
+
+dependencies:
+  bloc: ^8.1.4
+  build_runner: ^2.4.9
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  flutter_localizations:
+    sdk: flutter
+  geocoding: ^3.0.0
+  geolocator: ^11.1.0
+  image_picker: ^1.0.8
+  intl: ^0.18.0
+  json_annotation: ^4.9.0
+  permission_handler: ^11.3.1
+  shared_preferences: ^2.2.3
+  sqflite: ^2.3.2
+
+dev_dependencies:
+  bloc_test: ^9.1.2
+  flutter_test:
+    sdk: flutter
+  json_serializable: ^6.8.0
+  mocktail: ^0.3.0
+  very_good_analysis: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - lib/resources/hnicustomersmet.json
+    - lib/resources/nonhnicustomermet.json
+    - lib/resources/activitiesconducted.json
