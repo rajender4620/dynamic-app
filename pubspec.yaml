@@ -9,6 +9,7 @@ environment:
 dependencies:
   bloc: ^8.1.4
   build_runner: ^2.4.9
+  camera: ^0.11.0+1
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6

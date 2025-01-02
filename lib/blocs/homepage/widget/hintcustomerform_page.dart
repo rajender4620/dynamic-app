@@ -1,12 +1,17 @@
 // ignore_for_file: omit_local_variable_types
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hni_customers_app/blocs/homepage/widget/camera_screen.dart';
 import 'package:hni_customers_app/core/app_color.dart';
 import 'package:hni_customers_app/model/hni_customer_met_model.dart';
 import 'package:hni_customers_app/utils/shared_preference.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:camera/camera.dart';
 
 class DynamicForm extends StatefulWidget {
   const DynamicForm({
@@ -25,6 +30,7 @@ class _DynamicFormState extends State<DynamicForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   HniCustomerMetResponce? _selectedForm;
   final Map<int, TextEditingController> _controllers = {};
+  File? _imageFile;
 
   @override
   void initState() {
@@ -111,17 +117,31 @@ class _DynamicFormState extends State<DynamicForm> {
         );
       }
     } else {
-      // Handle mobile geolocation
-      final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text('Location: ${position.latitude}, ${position.longitude}'),
-        ),
-      );
+      final status = await Permission.location.request();
+      if (status.isGranted) {
+        // Fetch location
+        final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        setState(() {
+          question.userResponse = '${position.latitude}, ${position.longitude}';
+        });
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Location: ${position.latitude}, ${position.longitude}',
+            ),
+          ),
+        );
+      } else {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permission denied')),
+        );
+      }
     }
   }
 
@@ -143,13 +163,28 @@ class _DynamicFormState extends State<DynamicForm> {
           question.userResponse = pickedFile?.path;
         });
       } else {
-        // Mobile: Use camera for capturing an image
-        final XFile? pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.camera,
-        );
-        setState(() {
-          question.userResponse = pickedFile?.path;
-        });
+        try {
+          WidgetsFlutterBinding.ensureInitialized();
+          final cameras = await availableCameras();
+          if (!mounted) return;
+          final image = await Navigator.push<String>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(cameras: cameras),
+            ),
+          );
+          if (image != null) {
+            setState(() {
+              _imageFile = File(image);
+              question.userResponse = _imageFile!.path;
+            });
+          }
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('No image selected $e')),
+          );
+        }
       }
     } catch (e) {
       if (!mounted) return;
