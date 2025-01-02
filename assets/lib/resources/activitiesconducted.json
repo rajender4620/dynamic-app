@@ -1,0 +1,39 @@
+{
+    "data": {
+        "getUserForm": {
+            "id": 18,
+            "name": "activities conducted today",
+            "formUuid": "d6900908-3fac-4561-874e-2a1dad243c8b",
+            "isEditable": true,
+            "parentFormUuid": null,
+            "questions": [
+                {
+                    "id": 91,
+                    "question": "type of activity conducted",
+                    "questionType": "RADIO",
+                    "answerType": "TEXT",
+                    "hintText": "",
+                    "maxLines": 5,
+                    "isEnabled": true,
+                    "isMandatoryField": true,
+                    "referenseFormId": null,
+                    "reValidation": null,
+                    "reValidationText": null
+                },
+                {
+                    "id": 90,
+                    "question": "remarks",
+                    "questionType": "TEXTFORMFIELD",
+                    "answerType": "TEXT",
+                    "hintText": "type something...",
+                    "maxLines": 5,
+                    "isEnabled": true,
+                    "isMandatoryField": true,
+                    "referenseFormId": null,
+                    "reValidation": null,
+                    "reValidationText": null
+                }
+            ]
+        }
+    }
+}
